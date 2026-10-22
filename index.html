@@ -223,6 +223,7 @@ footer .hl{color:var(--txt);font-weight:600}
   .chart-card{grid-column:auto}
   .row2{flex-direction:column}
 }
+.demo-chip{display:inline-block;margin-left:10px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:500;background:#fff7e6;color:#ad6800;border:1px solid #ffd591;vertical-align:2px}
 </style>
 </head>
 <body>
@@ -232,7 +233,7 @@ footer .hl{color:var(--txt);font-weight:600}
     <div class="brand">
       <div class="logo">持仓</div>
       <div>
-        <h1>基金持仓管理</h1>
+        <h1>基金持仓管理<span class="demo-chip" id="demoChip" title="首次访问自动载入的示例数据。可在「帮助」里清空全部数据后录入自己的持仓" style="display:none">示例数据</span></h1>
         <p class="sub">场内 ETF · 场外基金 一体化管理</p>
       </div>
     </div>
@@ -1909,6 +1910,7 @@ $('#btnAddPlan').onclick=()=>{
    全量渲染
 ================================================================ */
 function renderAll(){
+  const dc=document.getElementById('demoChip');if(dc)dc.style.display=(state&&state.demoLoaded)?'':'none';
   renderThead();
   renderSectorFilter();
   renderSummary();
@@ -1964,7 +1966,7 @@ $('#importFile').addEventListener('change',ev=>{
 $('#btnClearAll').onclick=()=>{
   if(!confirm('确定清空全部数据？此操作不可恢复！'))return;
   if(!confirm('再次确认：将删除所有基金、交易记录和定投计划。'))return;
-  state={funds:[],txs:[],plans:[],autoDca:true,totalCostBaseEX:0,totalCostBaseOTC:0,customStart:''};
+  state={funds:[],txs:[],plans:[],autoDca:true,totalCostBaseEX:0,totalCostBaseOTC:0,customStart:'',everAuto:state.everAuto||false};
   navCache={OTC:{},EX:{}};
   saveState();saveCache();
   closeOv('ovHelp');
@@ -1999,6 +2001,7 @@ $('#btnDemo').onclick=()=>{
     const f2=state.funds.find(f=>f.code==='510300');
     if(f2)state.plans.push({id:uid(),fundId:f2.id,amount:1000,freq:'M',day:5,enabled:true,lastExec:''});
   }
+  state.demoLoaded=true;
   saveState();
   // 示例底数：场内 24000（510300/512880 建仓）+ 场外 18000（005827/161725/000001 建仓）
   state.totalCostBaseEX=24000;state.totalCostBaseOTC=18000;saveState();
@@ -2029,6 +2032,11 @@ function init(){
   $('#btnRefresh').onclick=()=>refreshAll(true);
   $$('.overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show');}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){$$('.overlay.show').forEach(o=>o.classList.remove('show'));closeDrawer();}});
+  // 首次访问自动载入示例数据（everAuto 只置一次；清空数据后刷新不会再注入）
+  if(!state.funds.length&&!state.txs.length&&!state.everAuto){
+    state.everAuto=true;saveState();
+    $('#btnDemo').click();
+  }
   renderAll();
   startAutoRefresh();
   // 用缓存立即渲染，然后静默刷新数据

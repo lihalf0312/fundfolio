@@ -1,6 +1,6 @@
 # FundFolio · 基金持仓管理
 
-> 场内 ETF × 场外基金 一体化持仓管理。单文件、零后端、离线优先。**在线体验：[lihalf0312.github.io/fundfolio](https://lihalf0312.github.io/fundfolio/)**（打开后点「加载示例数据」即可把玩全部功能）
+> 场内 ETF × 场外基金 一体化持仓管理。单文件、零后端、离线优先。**在线体验：[lihalf0312.github.io/fundfolio](https://lihalf0312.github.io/fundfolio/)**（首次打开自动载入示例数据，可直接把玩全部功能；标题旁的「示例数据」角标提示当前为演示模式）
 
 ![桌面端全览](docs/screenshots/02-desktop-full.png)
 
@@ -12,7 +12,7 @@
 
 - **单 HTML 文件**（约 100 KB + Chart.js CDN）：无框架、无构建、无后端，任意静态托管可跑。
 - **真实数据源**：场内行情走东财 push2 接口，场外净值走天天基金 pingzhongdata / fundmobapi，全部通过 JSONP / script 注入绕过浏览器跨域限制，接口限流时自动退避重试。
-- **内置示例数据**：一键生成 5 只示例持仓 + 定投计划，演示完整功能，与真实数据隔离。
+- **内置示例数据**：首次访问自动载入 5 只示例持仓 + 定投计划（也可一键生成），演示完整功能，与真实数据隔离；清空后不会重复注入。
 
 ## 功能与口径设计（这个项目真正难的地方）
 
@@ -48,7 +48,7 @@
 ```bash
 # 直接双击 index.html 即可；或起个静态服务：
 python -m http.server 8080
-# 打开 http://localhost:8080，点「加载示例数据」
+# 打开 http://localhost:8080（首次访问自动载入示例数据）
 ```
 
 ## License
